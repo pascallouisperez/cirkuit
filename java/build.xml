@@ -1,0 +1,136 @@
+<project name="CirKuit2D" default="compile" basedir=".">
+    <description>CirKuit2D build file</description>
+    
+    <!-- set global properties for this build -->
+    <property name="project" value="CirKuit2D"/>
+    <property name="version" value="2.0-alpha"/>
+    <property name="src" location="src"/>
+    <property name="classes" location="classes"/>
+    <property name="lib" location="lib"/>
+    <property name="javadoc" location="doc"/>
+    <property name="backup" location="backup"/>
+    <property name="dist" location="dist"/>
+    <property name="man" location="man"/>
+    <property name="installer" location="installer"/>
+    
+    <!-- Initialize the build -->
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${classes}"/>
+        <mkdir dir="${lib}"/>
+        <mkdir dir="${javadoc}"/>
+        <mkdir dir="${backup}"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${man}"/>
+        <mkdir dir="${installer}"/>
+    </target>
+
+    <!-- Compile the java code from ${src} into ${classes} -->
+    <target name="compile" depends="init" description="Compiling the source">
+        <javac srcdir="${src}" destdir="${classes}" classpath="${lib}"/>
+    </target>
+    
+    <!-- Generate the .jar file -->
+    <target name="jar" depends="compile" description="Generating the jar file">
+        <jar destfile="${project}.jar" basedir="${classes}">
+             <manifest>
+                 <attribute name="Built-By" value="Sven Gowal and Pascal Perez"/>
+                 <attribute name="Main-Class" value="cirkuit.CirKuit"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Generates win32 executables (windows users only, and requires make) -->
+    <target name="win32" depends="compile" description="Generating the exe files">
+        <exec executable="make" failifexecutionfails="false"/>
+    </target>
+    
+    <!-- Generate the javadoc -->
+    <target name="doc" depends="init" description="Generating the javadoc">
+        <javadoc sourcepath="${src}" destdir="${javadoc}" packagenames="*" author="true" version="true" breakiterator="true">
+            <link href="http://java.sun.com/j2se/1.4.2/docs/api"/>
+        </javadoc>
+    </target>
+    
+    <!-- Backup .java files in a gzipped tar archive -->
+    <target name="backup" depends="init" description="Making a backup of the source">
+        <zip destfile="${backup}/${project}-${DSTAMP}-${TSTAMP}.zip">
+            <zipfileset dir="shared" prefix="shared">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${lib}" prefix="lib">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="man" prefix="man">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${src}" prefix="src">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${installer}" prefix="installer">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir=".">
+                <include name="build.xml"/>
+                <include name="makefile"/>
+                <include name="README.txt"/>
+                <include name="CirKuitServer_protocol.txt"/>
+            </zipfileset>
+        </zip>
+    </target>
+
+    <!-- Create dist files in gzipped tar archives -->
+    <target name="dist" depends="jar,win32" description="Making distribution files">
+        <!-- bin -->
+        <zip destfile="${dist}/${project}-${version}-bin.zip">
+            <zipfileset dir="shared" prefix="shared">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${lib}" prefix="lib">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="man" prefix="man">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir=".">
+                <include name="${project}.jar"/>
+                <include name="README.txt"/>
+            </zipfileset>
+        </zip>
+
+        <!-- src -->
+        <zip destfile="${dist}/${project}-${version}-src.zip">
+            <zipfileset dir="shared" prefix="shared">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${lib}" prefix="lib">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="man" prefix="man">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${src}" prefix="src">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="${installer}" prefix="installer">
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir=".">
+                <include name="build.xml"/>
+                <include name="makefile"/>
+                <include name="README.txt"/>
+                <include name="CirKuitServer_protocol.txt"/>
+            </zipfileset>
+        </zip>
+
+        <!-- setup.exe only if InnoSetup is installed and the path is correct -->
+        <exec dir="${installer}" executable="iscc.exe" failifexecutionfails="false">
+            <arg line="setup.iss"/>
+        </exec>
+    </target>
+    
+    <!-- Cleaning -->
+    <target name="clean" description="Cleaning">
+        <delete dir="${classes}"/>
+    </target>
+</project>

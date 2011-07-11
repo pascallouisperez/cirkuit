@@ -1,0 +1,296 @@
+.: CirKuit 2D Online Protocol :.
+--------------------------------
+
+# connection
+client             server
+  |---> (connection)  |
+  |        WELC   <---|
+  |--->    INFO       |
+  |        COMC   <---| confirm username
+
+# make
+client             server
+  |--->    MAKE       |
+  |        COMC   <---| confirm gamename
+
+# dest
+client             server
+  |--->    DEST       |
+  |        ACKN   <---|
+
+# clis
+client             server
+  |--->    CLID       |
+  |        CLIS   <---|
+
+# sel
+client             server
+  |---> SELC-M-A-G-N-D-T |
+  |        COMC      <---| confirm select
+
+# csel
+client             server
+  |--->    CSEL       |
+  |        COMC   <---| confirm select
+  
+# quit
+client             server
+  |--->    QUIT       |
+  |        GBYE   <---|
+  |  (disconnection)  |
+  
+# quit a game
+client             server
+  |--->    QTGM       |
+  |        KICK   <---|
+
+# starting a game
+client             server
+  |--->    STRT       |
+  |        STIG   <---|
+  |        GINF   <---|
+  |        ...    <---|
+  |        GINE   <---|
+  |      (waiting)    |
+  |--->    REDY       |
+  |        GLGS   <---|
+
+# commands syntax
+ACKN
+    acknowledge : Confirms that the previous command was executed correctly.
+    
+ASKM +
+    asks for a move
+
+CHAT message +
+    chat : sends a message to all players.
+    message - a string
+    
+CINE +
+    circuit info end : stops sending circuit infos
+    
+CINF +
+    circuit info : starts sending circuit infos
+    
+CLID +
+    circuit list demand : Asks the server for its circuit list.
+
+CLIS circuit1, circuit2, ..., circuitN +
+    circuits list : The list of available circuits on the server.
+    circuitI (I = 1..N) - a string
+    
+COMC value +
+    command confirmation : The server answers to commands which specify a name with
+    this command, thus, the server can manage name collsions conflicts. Eg. when a
+    new user connects, he specifies a username which might already be in use. The
+    server resolves the conflict and acknowledges by giving the actual username in use.
+    value - a string
+
+CSEL circuit, mode, acceleration, deceleration, angle, grid, numlaps, crashradius, trace, crash, hint, maxplayer +
+    complete selection
+    circuit - a string
+    mode - an integer
+    acceleration - an integer
+    deceleration - an integer
+    angle - an integer
+    grid - an integer
+    numlaps - an integer
+    
+DEST +
+    destroy the game associated with the client.
+    gamename - a string
+
+GETC circuit
+    Get the circuit. The server replies by a CINF\n<circuit infos>\nCINE.
+    circuit - a string
+
+GBYE +
+    good bye : Confirms the exit procedure.
+    
+GGIN +
+    get game info : Gets the game infos
+    
+GINE +
+    game info end : ends sending game infos
+    
+GINF +
+    game info : starts sending game infos
+    
+GLCH name1, name2, ... +
+    game listener crash
+    nameI -  a string
+    
+GLGC +
+    game listener gameChanged
+    
+GLGF +
+    game listener gameFinished
+    
+GLGS +
+    game listener gameStarted
+    
+GLID +
+    game list demand : Asks the server for its game list.
+
+GLIS game1, circuit1, mode1, acceleration1, deceleration1, angle1, grid1, numlaps1, numplayers1, ..., gameN, ... -
+    games list : The list of available games on the server.
+    gameI (I = 1..N) - a string
+    circuitI (I = 1..N) - a string
+    modeI (I = 1..N) - an integer
+    accelerationI (I = 1..N) - an integer
+    decelerationI (I = 1..N) - an integer
+    angleI (I = 1..N) - an integer
+    gridI (I = 1..N) - an integer
+    numlapsI (I = 1..N) - an integer
+    numplayersI (I = 1..N) - an integer
+    
+GLMD name, x, y +
+    game listener playerMoved
+    name - a string
+    x - an integer
+    y - an integer
+    
+GLPA name, time
+    game listener playerArrived
+    name - a string
+    time - a double
+    
+GLPO name
+    game listener playerOut
+    name - a string
+    
+GUPD username, x1, y1, color1, ..., xN, yN, colorN +
+    game update : Sends the new valid moves for the player username with corresponding colors
+    username - a string
+    xI (I= 1..N) - an integer
+    yI (I= 1..N) - an integer
+    colorI (I = 1..N) - an integer triplet r,g,b
+    
+INFO username, color [, version] -
+    information : The client sends this after a welcome message, he can thus specify
+    what username to use and what color to use.
+    username - a string
+    color - an integer triplet r,g,b
+    version - a string
+
+MAKE gamename +
+    make a new game : Creates a new game on the server.
+    gamename - a string
+    
+MESG username, message +
+    message : sends a message from user username.
+    username - a string
+    message - a string
+    
+MOVE x,y +
+    set the client position in the game
+    x - an integer
+    y - an integer
+    
+PLYR name, color
+    player : sends a player name and color during game info (inside GINF and GINE)
+    name - a string
+    color - an integer triplet r,g,b
+
+PRCF circuitFilename
+    properties circuit filename : sends the circuit filename (inside GINF and GINE)
+    circuitFilename - a string
+    
+PRCR size +
+    properties crash radius : sends the crash radius during game info (inside GINF and GINE)
+    size - an integer
+    
+PRGR grid +
+    properties grid : sends the grid size during game info (inside GINF and GINE)
+    grid - an integer
+    
+PRIC iscrash +
+    properties is crash : sends the crash staus during game info (inside GINF and GINE)
+    iscrash - an integer (0 - false, 1 - true)
+    
+PRMA angle +
+    properties maximum angle : sends the turning angle during game info (inside GINF and GINE)
+    angle - an integer
+    
+PRMD mode +
+    properties mode : sends the mode during game info (inside GINF and GINE)
+    mode - an integer
+
+PRMS speed +
+    properties minus speed : sends the deceleration during game info (inside GINF and GINE)
+    speed -  an integer
+
+PRPS speed +
+    properties plus speed : sends the acceleration during game info (inside GINF and GINE)
+    speed - an integer
+
+PRRD reddots +
+    properties red dots : sends the hint staus during game info (inside GINF and GINE)
+    reddots - an integer (0 - false, 1 - true)
+    
+PRTC trace +
+    properties trace : sends the trace length during game info (inside GINF and GINE)
+    trace - an integer
+
+PRTN numlaps +
+    properties turn : sends the number of laps during game info (inside GINF and GINE)
+    numlaps -  an integer
+
+QUIT +
+    quit the server : Informs the server that the client quits.
+
+QTGM +
+    quit the game : Informs the server that the client quits his current game.
+
+SELA acceleration +
+    select the acceleration
+    acceleration - an integer
+
+SELC circuit +
+    select the circuit : the circuit should be in the circuit list (CLID)
+    circuit - a string
+    
+SELD deceleration +
+    select the deceleration
+    deceleration - an integer
+    
+SELE length +
+    select the trace length
+    length - an integer
+    
+SELG gridsize +
+    select the grid size
+    gridsize - an integer
+    
+SELH reddots +
+    select the red dots status
+    reddots - an integer (0 - false, 1 - true)
+    
+SELM mode +
+    select mode
+    mode - an integer
+
+SELN numlaps +
+    select the number of laps
+    numlaps - an integer
+    
+SELR crashradius +
+    select the crash radius
+    crashradius - an integer
+    
+SELS crash +
+    select the crash status
+    crash - an integer (0 - false, 1 - true)
+    
+SELT angle +
+    select turning angle
+    angle - an integer
+    
+STIG +
+    starting : the game will start and game infos are sent
+    
+WELC +
+    welcome : Welcomes a client on the server and gives him a unique identifier.
+
+.: COMMENTS :.
+--------------
