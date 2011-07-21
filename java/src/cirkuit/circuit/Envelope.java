@@ -562,14 +562,15 @@ public class Envelope extends Polygon {
      */
     public double getLength() {
         double l = 0;
-        int i = 0;
         int x, y;
-        for (int j = 1; j < npoints; j++) {
+        for (int i = 0, j = 1; j < npoints; i++, j++) {
             x = xpoints[i]-xpoints[j];
             y = ypoints[i]-ypoints[j];
             l += Math.sqrt(x*x+y*y);
         }
-        return l;
+        x = xpoints[npoints - 1]-xpoints[0];
+        y = ypoints[npoints - 1]-ypoints[0];
+        return l + Math.sqrt(x*x+y*y);
     }
     
     /**
