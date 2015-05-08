@@ -167,16 +167,16 @@ public class CirKuitEdit extends JFrame implements WindowListener, ActionListene
         menu.add(menuTmp0);
         
         menuTmp0 = new JMenu("Rotate");
-        menuItem = new JMenuItem("30°");
+        menuItem = new JMenuItem("30\u0176");
         menuItem.addActionListener( new ActionListener() { public void actionPerformed(ActionEvent e) { rotateCircuit(Math.PI/6); }});
         menuTmp0.add(menuItem);
-        menuItem = new JMenuItem("90°");
+        menuItem = new JMenuItem("90\u0176");
         menuItem.addActionListener( new ActionListener() { public void actionPerformed(ActionEvent e) { rotateCircuit(Math.PI/2); }});
         menuTmp0.add(menuItem);
-        menuItem = new JMenuItem("180°");
+        menuItem = new JMenuItem("180\u0176");
         menuItem.addActionListener( new ActionListener() { public void actionPerformed(ActionEvent e) { rotateCircuit(Math.PI); }});
         menuTmp0.add(menuItem);
-        menuItem = new JMenuItem("270°");
+        menuItem = new JMenuItem("270\u0176");
         menuItem.addActionListener( new ActionListener() { public void actionPerformed(ActionEvent e) { rotateCircuit(3*Math.PI/2); }});
         menuTmp0.add(menuItem);
         menu.add(menuTmp0);
